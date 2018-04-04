@@ -1,0 +1,5 @@
+﻿  client.cpp
+c:\users\home\documents\visual studio 2017\projects\client\client\client.cpp(50): warning C4129: E: неизвестная escape-последовательность
+c:\users\home\documents\visual studio 2017\projects\client\client\client.cpp(61): warning C4101: thID: неиспользованная локальная переменная
+  client.vcxproj -> c:\users\home\documents\visual studio 2017\Projects\client\Debug\client.exe
+  client.vcxproj -> c:\users\home\documents\visual studio 2017\Projects\client\Debug\client.pdb (Partial PDB)
