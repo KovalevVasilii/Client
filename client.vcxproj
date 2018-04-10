@@ -111,9 +111,11 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClInclude Include="..\..\Server\Server\helper.h" />
     <ClInclude Include="client.h" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="..\..\Server\Server\helper.cpp" />
     <ClCompile Include="client.cpp" />
     <ClCompile Include="main.cpp" />
   </ItemGroup>
