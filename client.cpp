@@ -1,7 +1,6 @@
 #include "client.h"
-
+#include <thread>
 #include <string>
-
 DWORD WINAPI GetNewMessage(LPVOID client_socket);
 DWORD WINAPI ServerMessage(LPVOID client_socket);
 
@@ -58,14 +57,56 @@ Client::~Client()
 {
 }
 
+void Client::process() {
+	while (true) {
+		std::string answer;
+		char buf[1024];
+		std::cout << "\\send to send a msg" << std::endl;
+		std::cout << username << ": ";
+		std::getline(std::cin, answer);
+		if (answer == "\\send") {
+			std::cout << "To: ";
+			std::string To;
+			//std::cout<<"\n";
+			std::getline(std::cin, To);
+			std::cout << "Your msg: " << std::endl;
+			std::string what;
+			std::getline(std::cin, what);
+			//std::cout << "\n";
+			std::string loginStr = client_sendMessage(username,To, what);
+			send(my_sock, loginStr.c_str(), loginStr.length(), 0);
+		}
+		else if (answer == "\\listen") {
+			recv(my_sock, buf, sizeof(buf), 0);
 
+			std::cout << buf << std::endl;
+		}
+		else if (answer == "\\quit") {
+			//std::cout << "To: ";
+			std::string To ="0";
+			//std::cout<<"\n";
+			//std::getline(std::cin, To);
+			std::string loginStr = client_quitConversation(username, To);
+			send(my_sock, loginStr.c_str(), loginStr.length(), 0);
+			exit(0);
+		
+		}
+	}
+}
+void Client::listen() {
+	while (true) {
+		char buf[1024];
+		recv(my_sock, buf, sizeof(buf), 0);
+		std::cout << buf << std::endl;
+	}
+}
 void Client::start() {
 	//system("clear");
 
 	std::string answer;
 	std::cout << "Welcome to the chat client!" << std::endl;
 	std::cout << "Type \\create to create a new account or enter in your credentials to log in.\n\n";
-
+	bool flag = true;
 	while (true)
 	{
 		std::cout << "Username: ";
@@ -74,10 +115,11 @@ void Client::start() {
 		if (username == "\\create") {
 			createAccount();
 		}
-
-		std::cout << "Password: ";
-		//setPasswordInput(true);
-		std::getline(std::cin, password);
+		else {
+			std::cout << "Password: ";
+			//setPasswordInput(true);
+			std::getline(std::cin, password);
+		}
 		//setPasswordInput(false);
 
 		std::string loginStr = client_login(username, password);
@@ -89,10 +131,18 @@ void Client::start() {
 			std::cout << "The username or password you entered is incorrect! Please try again.\n\n";
 		}
 		else {
-			system("clear");
+			std::cout << "You are authorized" << std::endl;
+			//system("clear");
+			//std::cout << "Nice";
 			break;
 		}
+		//recv(my_sock, &response, sizeof(response), 0);
 	}
+	std::thread thr(&Client::process,this);
+	std::thread thr2(&Client::listen,this);
+	thr.join();
+	thr2.join();
+	//process();
 
 	//mainMenu();
 }
@@ -121,12 +171,14 @@ void Client::createAccount() {
 	recv(my_sock, &response, sizeof(response), 0);
 
 	if (response == CREATE_ACCOUNT_SUCCESS) {
-		std::string loginStr = client_login(username, password);
+		/*std::string loginStr = client_login(username, password);
 		send(my_sock, loginStr.c_str(), loginStr.length(), 0);
 		char response;
 		recv(my_sock, &response, sizeof(response), 0);
-		system("clear");
+		//system("clear");*/
+		
 	}
+
 }
 
 

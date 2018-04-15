@@ -4,7 +4,7 @@
 
 #pragma comment(lib, "ws2_32.lib")
 #pragma warning(disable: 4996)
-#include "../../Server/Server/helper.h"
+#include "helper.h"
 #include <iostream>
 #include <WinSock2.h>
 #include <winsock.h>
@@ -17,7 +17,8 @@ public:
 	Client();
 	~Client();
 	void handle();
-
+	void process();
+	void listen();
 	//int makeSock();
 
 	//void makeConnection();
@@ -40,7 +41,7 @@ private:
 	struct sockaddr_in serverinfo;
 	//int sock;
 	int connection;
-	char buffer[1000];
+	char buffer[1024];
 	long sendAttempt;
 	long receiveAttempt;
 	std::string username;
